@@ -186,6 +186,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     Provider.of<QuizQuestion>(context, listen: false).setDifficulty(_difficulty);
                     Provider.of<QuizQuestion>(context, listen: false).setType(_type);
                     result = await question(context);
+                    print(result);
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/quiz');
                   },
