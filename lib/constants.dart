@@ -34,3 +34,9 @@ TextStyle customStyleDarkSmall = GoogleFonts.robotoMono(
   fontSize: 15,
   fontWeight: FontWeight.bold,
 );
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1)}";
+  }
+}

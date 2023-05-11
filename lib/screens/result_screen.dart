@@ -10,7 +10,7 @@ var data;
 var noOfPlayers;
 
 class ResultScreen extends StatelessWidget {
-  ResultScreen({Key? key}) : super(key: key);
+  const ResultScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class ResultScreen extends StatelessWidget {
                   Consumer<PlayerScore>(
                     builder: (context, playerScore, child) {
                       return Text(
-                        playerScore.name,
+                        playerScore.name.toString().capitalize(),
                         style: customStyleDark,
                       );
                     },
@@ -47,7 +47,12 @@ class ResultScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/', // named route of the home screen
+                            (Route<dynamic> route) => false,
+                      );
+
                     },
                     child: Text("Restart", style: customStyleDarkSmall,),
                   ),
@@ -77,7 +82,7 @@ class ResultScreen extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      "${snapshot.data!.docs[0]['name']}:${snapshot.data!.docs[0]['score']}",
+                                      "${snapshot.data!.docs[0]['name'].toString().capitalize()}:${snapshot.data!.docs[0]['score']}",
                                       style: customStyleDark,
                                     ),
                                   ),

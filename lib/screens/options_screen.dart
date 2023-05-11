@@ -6,12 +6,12 @@ import 'package:quiz_app/scores/score_add.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
 import '../utils/quiz_question.dart';
 
-var _difficulty;
-var _type;
-var _category;
+var  _difficulty;
+var  _type;
+var  _category;
 
 class OptionScreen extends StatefulWidget {
-  OptionScreen({Key? key}) : super(key: key);
+  const OptionScreen({Key? key}) : super(key: key);
 
   @override
   State<OptionScreen> createState() => _OptionScreenState();
@@ -19,8 +19,16 @@ class OptionScreen extends StatefulWidget {
 
 class _OptionScreenState extends State<OptionScreen> {
 
-  TextEditingController _noOfQuestionsController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
+  var _noOfQuestionsController;
+  var _nameController;
+
+  @override
+  void initState() {
+    _noOfQuestionsController = TextEditingController();
+    _nameController = TextEditingController();
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +97,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     ),
                   ],
                   onChanged: (value) {
-                    _difficulty = value;
+                    _difficulty = value!;
                     setState(() {});
                   },
                 ),
@@ -146,7 +154,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     ),
                   ],
                   onChanged: (value) {
-                    _category = value;
+                    _category = value!;
                     setState(() {});
                   },
                 ),
@@ -171,7 +179,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     ),
                   ],
                   onChanged: (value) {
-                    _type = value;
+                    _type = value!;
                     setState(() {});
                   },
                 ),
@@ -186,7 +194,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     Provider.of<QuizQuestion>(context, listen: false).setDifficulty(_difficulty);
                     Provider.of<QuizQuestion>(context, listen: false).setType(_type);
                     result = await question(context);
-                    print(result);
+                    // print(result);
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/quiz');
                   },

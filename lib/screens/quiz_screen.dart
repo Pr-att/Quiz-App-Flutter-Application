@@ -3,15 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/constants.dart';
 import 'package:quiz_app/scores/score_add.dart';
 import '../utils/timer.dart';
 
 var response;
 var result;
 var _finalShuffledValue;
+var _correctBoolAnswer;
 
 class QuizScreen extends StatefulWidget {
-  QuizScreen({Key? key}) : super(key: key);
+  const QuizScreen({Key? key}) : super(key: key);
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -22,7 +24,15 @@ var _value;
 var currentScore = 0;
 
 class _QuizScreenState extends State<QuizScreen> {
-  PageController _controller = PageController(initialPage: 0);
+
+  late PageController _controller;
+
+  @override
+  void initState() {
+    _controller = PageController(initialPage: 0);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +79,8 @@ class _QuizScreenState extends State<QuizScreen> {
                           _finalShuffledValue = position;
                           answers.insert(position, correctAnswer);
                         }
+
+                        print(correctAnswer);
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
@@ -170,76 +182,118 @@ class _QuizScreenState extends State<QuizScreen> {
                                       Expanded(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Consumer<PlayerScore>(
-                                            builder: (BuildContext context,
-                                                value, Widget? child) {
-                                              return ElevatedButton(
-                                                onPressed: currentPage ==
-                                                        result['results']
-                                                                .length -
-                                                            1
-                                                    ? () {
-                                                        if (_finalShuffledValue ==
-                                                            _value) {
-                                                          currentScore++;
-                                                        } else {
-                                                          currentScore--;
-                                                        }
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'scores')
-                                                            .doc(value.name
-                                                                .toString())
-                                                            .set({
-                                                          'name': value.name,
-                                                          'score': currentScore
-                                                        });
-                                                        Navigator
-                                                            .pushReplacementNamed(
-                                                                context,
-                                                                '/result',
-                                                                arguments:
-                                                                    currentScore);
-                                                      }
-                                                    : () {
-                                                        if (_finalShuffledValue ==
-                                                            _value) {
-                                                          currentScore++;
-                                                        } else {
-                                                          currentScore--;
-                                                        }
-                                                        currentPage++;
-                                                        _value = null;
-                                                        _controller.animateToPage(
-                                                            currentPage,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        100),
-                                                            curve:
-                                                                Curves.easeIn);
-                                                        setState(() {});
-                                                      },
-                                                style: ButtonStyle(
-                                                  backgroundColor: _value ==
-                                                          null
-                                                      ? MaterialStateProperty
-                                                          .all(
-                                                              Colors.brown[100])
-                                                      : MaterialStateProperty
-                                                          .all(Colors
-                                                              .purple[500]),
-                                                ),
-                                                child: currentPage <
-                                                        result['results']
-                                                                .length -
-                                                            1
-                                                    ? const Text('Next')
-                                                    : const Text('Submit'),
-                                              );
-                                            },
-                                          ),
+                                          child: StreamBuilder<QuerySnapshot>(
+                                              stream: FirebaseFirestore.instance
+                                                  .collection('high-score')
+                                                  .snapshots(),
+                                              builder: (context, snapshot) {
+                                                return Consumer<PlayerScore>(
+                                                  builder:
+                                                      (BuildContext context,
+                                                          value,
+                                                          Widget? child) {
+                                                    return ElevatedButton(
+                                                      onPressed: currentPage ==
+                                                              result['results']
+                                                                      .length -
+                                                                  1
+                                                          ? () {
+                                                              if (_finalShuffledValue ==
+                                                                  _value) {
+                                                                currentScore++;
+                                                              } else {
+                                                                currentScore--;
+                                                              }
+
+                                                              if (snapshot.data!
+                                                                          .docs[0]
+                                                                      [
+                                                                      'score'] <
+                                                                  currentScore) {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'high-score')
+                                                                    .doc('alex')
+                                                                    .update({
+                                                                  'name': value
+                                                                      .name
+                                                                      .toString()
+                                                                      .capitalize(),
+                                                                  'score':
+                                                                      currentScore
+                                                                });
+                                                              }
+
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'scores')
+                                                                  .doc(value
+                                                                      .name
+                                                                      .toString())
+                                                                  .set({
+                                                                'name':
+                                                                    value.name,
+                                                                'score':
+                                                                    currentScore
+                                                              });
+                                                              Navigator
+                                                                  .pushReplacementNamed(
+                                                                      context,
+                                                                      '/result',
+                                                                      arguments:
+                                                                          currentScore);
+                                                            }
+                                                          : () {
+                                                              if (_finalShuffledValue ==
+                                                                  _value) {
+                                                                currentScore++;
+                                                              } else {
+                                                                currentScore--;
+                                                              }
+                                                              currentPage++;
+                                                              _value = null;
+                                                              _controller.animateToPage(
+                                                                  currentPage,
+                                                                  duration: const Duration(
+                                                                      milliseconds:
+                                                                          100),
+                                                                  curve: Curves
+                                                                      .easeIn);
+                                                              setState(() {});
+                                                            },
+                                                      style: ButtonStyle(
+                                                        backgroundColor: _value ==
+                                                                null
+                                                            ? MaterialStateProperty
+                                                                .all(Colors
+                                                                    .brown[100])
+                                                            : MaterialStateProperty
+                                                                .all(Colors
+                                                                        .purple[
+                                                                    500]),
+                                                      ),
+                                                      child: currentPage <
+                                                              result['results']
+                                                                      .length -
+                                                                  1
+                                                          ? const Text(
+                                                              'Next',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            )
+                                                          : const Text(
+                                                              'Submit',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                    );
+                                                  },
+                                                );
+                                              }),
                                         ),
                                       ),
                                     ],
@@ -264,6 +318,9 @@ class _QuizScreenState extends State<QuizScreen> {
                       controller: _controller,
                       itemCount: result['results'].length,
                       itemBuilder: (context, index) {
+                        _correctBoolAnswer =
+                            result['results'][index]['correct_answer'];
+
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
@@ -290,7 +347,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                           style: GoogleFonts.robotoMono(
                                               fontSize: 20),
                                         ),
-                                        value: 0,
+                                        value: 'True',
                                         groupValue: _value,
                                         onChanged: (value) {
                                           setState(() {
@@ -304,7 +361,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                           style: GoogleFonts.robotoMono(
                                               fontSize: 20),
                                         ),
-                                        value: 1,
+                                        value: 'False',
                                         groupValue: _value,
                                         onChanged: (value) {
                                           setState(() {
@@ -353,29 +410,47 @@ class _QuizScreenState extends State<QuizScreen> {
                                                                       .length -
                                                                   1
                                                           ? () {
-                                                              if (_finalShuffledValue ==
+                                                              if (_correctBoolAnswer ==
                                                                   _value) {
                                                                 currentScore++;
                                                               } else {
                                                                 currentScore--;
                                                               }
-                                                              //TODO: Navigate to result page and pass the score into firebase
-                                                              // if (snapshot.data!.docs[0]['score'] < currentScore) {
-                                                              //   FirebaseFirestore.instance.collection('high-score').snapshots().
-                                                              // }
+
+                                                              if (snapshot.data!
+                                                                          .docs[0]
+                                                                      [
+                                                                      'score'] <
+                                                                  currentScore) {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'high-score')
+                                                                    .doc('alex')
+                                                                    .update({
+                                                                  'name': value
+                                                                      .name
+                                                                      .toString()
+                                                                      .capitalize(),
+                                                                  'score':
+                                                                      currentScore
+                                                                });
+                                                              }
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
                                                                       'scores')
                                                                   .doc(value
                                                                       .name
-                                                                      .toString())
+                                                                      .toString()
+                                                                      .capitalize())
                                                                   .set({
                                                                 'name':
                                                                     value.name,
                                                                 'score':
                                                                     currentScore
                                                               });
+
                                                               Navigator
                                                                   .pushReplacementNamed(
                                                                 context,
@@ -383,7 +458,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                                               );
                                                             }
                                                           : () {
-                                                              if (_finalShuffledValue ==
+                                                              if (_correctBoolAnswer ==
                                                                   _value) {
                                                                 currentScore++;
                                                               } else {
@@ -415,9 +490,18 @@ class _QuizScreenState extends State<QuizScreen> {
                                                               result['results']
                                                                       .length -
                                                                   1
-                                                          ? const Text('Next')
+                                                          ? const Text(
+                                                              'Next',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            )
                                                           : const Text(
-                                                              'Submit'),
+                                                              'Submit',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
                                                     );
                                                   },
                                                 );
