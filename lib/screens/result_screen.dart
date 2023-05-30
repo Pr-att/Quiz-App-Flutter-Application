@@ -9,16 +9,25 @@ import 'package:quiz_app/screens/quiz_screen.dart';
 var data;
 var noOfPlayers;
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   const ResultScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Stack(
           children: [
-            Lottie.asset('asset/lottie/celebration.json', repeat: true, fit: BoxFit.cover,),
+            Lottie.asset(
+              'asset/lottie/celebration.json',
+              repeat: true,
+              fit: BoxFit.cover,
+            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -47,14 +56,20 @@ class ResultScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      Provider.of<QuizQuestion>(context, listen: false)
+                          .restart();
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/', // named route of the home screen
-                            (Route<dynamic> route) => false,
+                        (Route<dynamic> route) => false,
                       );
 
+                      setState(() {});
                     },
-                    child: Text("Restart", style: customStyleDarkSmall,),
+                    child: Text(
+                      "Restart",
+                      style: customStyleDarkSmall,
+                    ),
                   ),
                   const SizedBox(
                     height: 20,

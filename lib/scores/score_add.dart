@@ -41,4 +41,12 @@ class QuizQuestion with ChangeNotifier {
     notifyListeners();
   }
 
+  void restart() {
+    _amount = null;
+    _category = null;
+    _difficulty = null;
+    _type = null;
+    notifyListeners();
+  }
+
 }
