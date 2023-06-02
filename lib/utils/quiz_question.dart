@@ -29,8 +29,8 @@ question(BuildContext context) async {
         '&type=${Provider.of<QuizQuestion>(context, listen: false).type}'),
   );
   if (response.statusCode == 200) {
-    print(jsonDecode(response.body));
     return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to load questions');
   }
-  print(response.statusCode);
 }

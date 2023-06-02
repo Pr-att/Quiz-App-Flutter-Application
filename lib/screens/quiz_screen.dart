@@ -24,7 +24,6 @@ var _value;
 var currentScore = 0;
 
 class _QuizScreenState extends State<QuizScreen> {
-
   late PageController _controller;
 
   @override
@@ -55,9 +54,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 children: [
                   CountdownTimer(
                     seconds: 60,
-                    onTimerFinished: () {
-                      print("Timer finished!");
-                    },
+                    onTimerFinished: () {},
                   ),
                 ],
               ),
@@ -80,7 +77,6 @@ class _QuizScreenState extends State<QuizScreen> {
                           answers.insert(position, correctAnswer);
                         }
 
-                        print(correctAnswer);
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
@@ -253,7 +249,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                                                 currentScore--;
                                                               }
                                                               currentPage++;
-                                                              _value = null;
+                                                              // _value = null;
                                                               _controller.animateToPage(
                                                                   currentPage,
                                                                   duration: const Duration(
@@ -433,9 +429,10 @@ class _QuizScreenState extends State<QuizScreen> {
                                                                       .toString()
                                                                       .capitalize(),
                                                                   'score':
-                                                                      currentScore
+                                                                      currentScore,
                                                                 });
                                                               }
+
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
@@ -448,14 +445,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                                                 'name':
                                                                     value.name,
                                                                 'score':
-                                                                    currentScore
+                                                                    currentScore,
                                                               });
-
                                                               Navigator
                                                                   .pushReplacementNamed(
-                                                                context,
-                                                                '/result',
-                                                              );
+                                                                      context,
+                                                                      '/result');
                                                             }
                                                           : () {
                                                               if (_correctBoolAnswer ==

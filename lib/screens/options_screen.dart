@@ -6,9 +6,9 @@ import 'package:quiz_app/scores/score_add.dart';
 import 'package:quiz_app/screens/quiz_screen.dart';
 import '../utils/quiz_question.dart';
 
-var  _difficulty;
-var  _type;
-var  _category;
+var _difficulty;
+var _type;
+var _category;
 
 class OptionScreen extends StatefulWidget {
   const OptionScreen({Key? key}) : super(key: key);
@@ -18,7 +18,6 @@ class OptionScreen extends StatefulWidget {
 }
 
 class _OptionScreenState extends State<OptionScreen> {
-
   var _noOfQuestionsController;
   var _nameController;
 
@@ -28,7 +27,6 @@ class _OptionScreenState extends State<OptionScreen> {
     _nameController = TextEditingController();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +38,10 @@ class _OptionScreenState extends State<OptionScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Customize your Quiz",
-                    style: customStyleDark,),
+                Text(
+                  "Customize your Quiz",
+                  style: customStyleDark,
+                ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -64,6 +64,7 @@ class _OptionScreenState extends State<OptionScreen> {
                   controller: _noOfQuestionsController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
+                    hintText: 'Questions in multiples of 5',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
@@ -188,15 +189,34 @@ class _OptionScreenState extends State<OptionScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    Provider.of<PlayerScore>(context, listen: false).setName(_nameController.text);
-                    Provider.of<QuizQuestion>(context, listen: false).setAmount(_noOfQuestionsController.text);
-                    Provider.of<QuizQuestion>(context, listen: false).setCategory(_category);
-                    Provider.of<QuizQuestion>(context, listen: false).setDifficulty(_difficulty);
-                    Provider.of<QuizQuestion>(context, listen: false).setType(_type);
+                    if (_nameController.text.isEmpty ||
+                        _noOfQuestionsController.text.isEmpty ||
+                        // int.parse(_noOfQuestionsController.text) % 5 != 0 ||
+                        _noOfQuestionsController.text == '0' ||
+                        _difficulty == null ||
+                        _category == null ||
+                        _type == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please Correctly Fill the Form'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    Provider.of<PlayerScore>(context, listen: false)
+                        .setName(_nameController.text);
+                    Provider.of<QuizQuestion>(context, listen: false)
+                        .setAmount(_noOfQuestionsController.text);
+                    Provider.of<QuizQuestion>(context, listen: false)
+                        .setCategory(_category);
+                    Provider.of<QuizQuestion>(context, listen: false)
+                        .setDifficulty(_difficulty);
+                    Provider.of<QuizQuestion>(context, listen: false)
+                        .setType(_type);
                     result = await question(context);
-                    // print(result);
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, '/quiz');
+                    Navigator.pushReplacementNamed(context, '/quiz');
                   },
                   child: const Text('Start Quiz'),
                 ),

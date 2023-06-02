@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/options': (context) => const OptionScreen(),
         '/result': (context) => const ResultScreen(),
       },
-      title: 'Flutter Demo',
+      title: 'QuizIt',
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.blue,
