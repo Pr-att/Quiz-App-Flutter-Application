@@ -64,7 +64,6 @@ class _OptionScreenState extends State<OptionScreen> {
                   controller: _noOfQuestionsController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    hintText: 'Questions in multiples of 5',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
@@ -191,19 +190,20 @@ class _OptionScreenState extends State<OptionScreen> {
                   onPressed: () async {
                     if (_nameController.text.isEmpty ||
                         _noOfQuestionsController.text.isEmpty ||
-                        // int.parse(_noOfQuestionsController.text) % 5 != 0 ||
-                        _noOfQuestionsController.text == '0' ||
                         _difficulty == null ||
                         _category == null ||
                         _type == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please Correctly Fill the Form'),
+                          content: Text('Please correctly fill all the fields'),
                         ),
                       );
                       return;
                     }
 
+                    const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    );
                     Provider.of<PlayerScore>(context, listen: false)
                         .setName(_nameController.text);
                     Provider.of<QuizQuestion>(context, listen: false)
@@ -215,7 +215,6 @@ class _OptionScreenState extends State<OptionScreen> {
                     Provider.of<QuizQuestion>(context, listen: false)
                         .setType(_type);
                     result = await question(context);
-                    Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, '/quiz');
                   },
                   child: const Text('Start Quiz'),
