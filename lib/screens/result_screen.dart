@@ -61,7 +61,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       Navigator.pushNamedAndRemoveUntil(
                         context,
                         '/', // named route of the home screen
-                        (Route<dynamic> route) => false,
+                            (Route<dynamic> route) => false,
                       );
 
                       setState(() {});
@@ -128,6 +128,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             child: ListView.builder(
                               itemCount: snapshot.data!.docs.length,
                               itemBuilder: (BuildContext context, int index) {
+
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20, right: 20, top: 5, bottom: 5),
@@ -135,7 +136,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          "${snapshot.data!.docs[index]['name']}'s score:",
+                                          "${snapshot.data?.docs[index]['name']}'s score:",
                                           style: customStyleDarkSmall,
                                         ),
                                       ),

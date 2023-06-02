@@ -1,4 +1,3 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -12,9 +11,6 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.grey[300],
         onPressed: () async {
-          // var highScore = FirebaseFirestore.instance.collection('high-score').snapshots();
-          // if (highScore[0])
-          // print(highScore);
           Navigator.pushNamed(context, '/options');
         },
         label: Text(
