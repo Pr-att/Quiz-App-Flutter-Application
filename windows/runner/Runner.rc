@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.alex" "\0"
-            VALUE "FileDescription", "quiz_app" "\0"
+            VALUE "FileDescription", "QuizIt" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "quiz_app" "\0"
+            VALUE "InternalName", "QuizIt" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.alex. All rights reserved." "\0"
             VALUE "OriginalFilename", "quiz_app.exe" "\0"
-            VALUE "ProductName", "quiz_app" "\0"
+            VALUE "ProductName", "QuizIt" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
