@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/scores/score_add.dart';
 import 'package:quiz_app/screens/quiz-screens/boolean_questions.dart';
 import 'package:quiz_app/screens/quiz-screens/multiple_choice_questions.dart';
+import 'package:quiz_app/utils/result.dart';
+
 import '../utils/timer.dart';
 
 dynamic response;
@@ -45,9 +48,32 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CountdownTimer(
-                    seconds: 60,
-                    onTimerFinished: () {},
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('high-score')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      return Consumer<PlayerScore>(
+                        builder: (BuildContext context, value, Widget? child) {
+                          return CountdownTimer(
+                            seconds: int.parse(Provider.of<QuizQuestion>(
+                                        context,
+                                        listen: false)
+                                    .amount) *
+                                30,
+                            onTimerFinished: () async {
+                              await getResult(
+                                  snapshot,
+                                  value,
+                                  context,
+                                  Provider.of<QuizQuestion>(context,
+                                          listen: false)
+                                      .type);
+                            },
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

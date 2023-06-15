@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,16 +44,23 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.alarm),
-        const SizedBox(width: 10),
-        Text(
-          "$_remainingSeconds sec",
-          style: GoogleFonts.robotoMono(fontSize: 20),
-        ),
-      ],
-    );
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('high-score').snapshots(),
+        builder: (context, snapshot) {
+          return Row(
+            children: [
+              Icon(Icons.alarm,
+                  color: _remainingSeconds < 10 ? Colors.red : Colors.black),
+              const SizedBox(width: 10),
+              Text(
+                "$_remainingSeconds sec",
+                style: GoogleFonts.robotoMono(
+                    fontSize: 20,
+                    color: _remainingSeconds < 10 ? Colors.red : Colors.black),
+              ),
+            ],
+          );
+        });
   }
 
   @override
