@@ -22,7 +22,6 @@ class QuizScreen extends StatefulWidget {
 }
 
 var currentPage = 0;
-dynamic kValue;
 var currentScore = 0;
 
 class _QuizScreenState extends State<QuizScreen> {
@@ -84,7 +83,6 @@ class _QuizScreenState extends State<QuizScreen> {
                   )
                 : Boolean(
                     kPageController: kPageController,
-                    correctBoolAnswer: kCorrectBoolAnswer,
                   )
           ],
         ));

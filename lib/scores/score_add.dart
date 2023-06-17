@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PlayerScore with ChangeNotifier {
-  String _name = '';
-  String get name => _name;
+  String? _name;
+
+  String? get name => _name;
 
   void setName(String name) {
     _name = name;
@@ -11,14 +12,17 @@ class PlayerScore with ChangeNotifier {
 }
 
 class QuizQuestion with ChangeNotifier {
-  var _amount;
-  var _category;
-  var _difficulty;
-  var _type;
+  String? _amount;
+  String? _category;
+  String? _difficulty;
+  String? _type;
 
   get amount => _amount;
+
   get category => _category;
+
   get difficulty => _difficulty;
+
   get type => _type;
 
   void setAmount(amount) {
@@ -48,5 +52,4 @@ class QuizQuestion with ChangeNotifier {
     _type = null;
     notifyListeners();
   }
-
 }

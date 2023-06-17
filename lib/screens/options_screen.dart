@@ -221,7 +221,7 @@ class _OptionScreenState extends State<OptionScreen> {
 
                         result = await question(context);
 
-                        if (result == null) {
+                        if (result['response_code'] != 0) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

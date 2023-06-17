@@ -1,14 +1,18 @@
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/constants.dart';
+
 import '../../scores/score_add.dart';
+import '../../utils/result.dart';
 import '../quiz_screen.dart';
 
 class Multiple extends StatefulWidget {
   final PageController kPageController;
+
   const Multiple({super.key, required this.kPageController});
 
   @override
@@ -16,12 +20,27 @@ class Multiple extends StatefulWidget {
 }
 
 class _MultipleState extends State<Multiple> {
+  List<String?> correctMultipleAnswersList = List.generate(
+      result['results'].length,
+      (index) => result['results'][index]['correct_answer']);
+
+  List<String?> userMultipleChoiceAnswersList =
+      List.generate(result['results'].length, (index) => null);
+
+  @override
+  void initState() {
+    print(result);
+    print(correctMultipleAnswersList);
+    print(userMultipleChoiceAnswersList);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.8,
       child: PageView.builder(
-        physics:  const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: widget.kPageController,
         itemCount: result['results'].length,
         itemBuilder: (context, index) {
@@ -32,6 +51,8 @@ class _MultipleState extends State<Multiple> {
             kFinalShuffledValue = position;
             answers.insert(position, correctAnswer);
           }
+
+          var unescape = HtmlUnescape();
 
           return Padding(
             padding: const EdgeInsets.all(10.0),
@@ -45,7 +66,7 @@ class _MultipleState extends State<Multiple> {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'Q${index + 1}: ${result['results'][index]['question']}',
+                        'Q${index + 1}: ${unescape.convert(result['results'][index]['question'])}',
                         style: GoogleFonts.robotoMono(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
@@ -54,53 +75,53 @@ class _MultipleState extends State<Multiple> {
                       children: [
                         RadioListTile(
                           title: Text(
-                            answers[0],
+                            unescape.convert(answers[0]),
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
-                          value: 0,
-                          groupValue: kValue,
+                          value: answers[0],
+                          groupValue: userMultipleChoiceAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userMultipleChoiceAnswersList[index] = value;
                             });
                           },
                         ),
                         RadioListTile(
                           title: Text(
-                            answers[1],
+                            unescape.convert(answers[1]),
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
-                          value: 1,
-                          groupValue: kValue,
+                          value: answers[1],
+                          groupValue: userMultipleChoiceAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userMultipleChoiceAnswersList[index] = value;
                             });
                           },
                         ),
                         RadioListTile(
                           title: Text(
-                            answers[2],
+                            unescape.convert(answers[2]),
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
-                          value: 2,
-                          groupValue: kValue,
+                          value: answers[2],
+                          groupValue: userMultipleChoiceAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userMultipleChoiceAnswersList[index] = value;
                             });
                           },
                         ),
                         RadioListTile(
                           title: Text(
-                            answers[3],
+                            unescape.convert(answers[3]),
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
-                          value: 3,
-                          groupValue: kValue,
+                          value: answers[3],
+                          groupValue: userMultipleChoiceAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userMultipleChoiceAnswersList[index] = value;
                             });
                           },
                         ),
@@ -114,8 +135,8 @@ class _MultipleState extends State<Multiple> {
                             child: ElevatedButton(
                               onPressed: () {
                                 currentPage--;
-                                kValue = null;
-                                widget.kPageController.animateToPage(currentPage,
+                                widget.kPageController.animateToPage(
+                                    currentPage,
                                     duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut);
                                 setState(() {});
@@ -138,70 +159,54 @@ class _MultipleState extends State<Multiple> {
                                       return ElevatedButton(
                                         onPressed: currentPage ==
                                                 result['results'].length - 1
-                                            ? () {
-                                                if (kFinalShuffledValue ==
-                                                    kValue) {
-                                                  currentScore++;
-                                                } else {
-                                                  currentScore--;
-                                                }
-
-                                                if (snapshot.data?.docs
-                                                        .isNotEmpty ==
-                                                    true) {
-                                                  // Access the property safely
-                                                  if (snapshot.data!.docs[0]
-                                                          ['score'] <
-                                                      currentScore) {
-                                                    // Update the Firestore document
-                                                    FirebaseFirestore.instance
-                                                        .collection(
-                                                            'high-score')
-                                                        .doc('alex')
-                                                        .update({
-                                                      'name': value.name
-                                                          .toString()
-                                                          .capitalize(),
-                                                      'score': currentScore,
-                                                    });
+                                            ? () async {
+                                                for (int i = 0;
+                                                    i <
+                                                        correctMultipleAnswersList
+                                                            .length;
+                                                    i++) {
+                                                  if (userMultipleChoiceAnswersList[
+                                                          i] ==
+                                                      correctMultipleAnswersList[
+                                                          i]) {
+                                                    currentScore++;
+                                                  } else if (userMultipleChoiceAnswersList[
+                                                          i] ==
+                                                      null) {
+                                                    continue;
+                                                  } else {
+                                                    currentScore--;
                                                   }
-
-                                                  FirebaseFirestore.instance
-                                                      .collection('scores')
-                                                      .doc(value.name
-                                                          .toString()
-                                                          .capitalize())
-                                                      .set({
-                                                    'name': value.name,
-                                                    'score': currentScore
-                                                  });
                                                 }
-                                                Navigator.pushReplacementNamed(
-                                                    context, '/result',
-                                                    arguments: currentScore);
+                                                await getResult(snapshot, value,
+                                                    context, 'boolean');
                                               }
                                             : () {
-                                                if (kFinalShuffledValue ==
-                                                    kValue) {
-                                                  currentScore++;
-                                                } else {
-                                                  currentScore--;
-                                                }
+                                                // if (kFinalShuffledValue ==
+                                                //     kValue) {
+                                                //   currentScore++;
+                                                // } else {
+                                                //   currentScore--;
+                                                // }
                                                 currentPage++;
-                                                kValue = null;
-                                                widget.kPageController.animateToPage(
-                                                    currentPage,
-                                                    duration: const Duration(
-                                                        milliseconds: 100),
-                                                    curve: Curves.easeIn);
+                                                widget.kPageController
+                                                    .animateToPage(currentPage,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    100),
+                                                        curve: Curves.easeIn);
                                                 setState(() {});
                                               },
                                         style: ButtonStyle(
-                                          backgroundColor: kValue == null
-                                              ? MaterialStateProperty.all(
-                                                  Colors.brown[100])
-                                              : MaterialStateProperty.all(
-                                                  Colors.purple[500]),
+                                          backgroundColor:
+                                              userMultipleChoiceAnswersList[
+                                                          index] ==
+                                                      null
+                                                  ? MaterialStateProperty.all(
+                                                      Colors.brown[100])
+                                                  : MaterialStateProperty.all(
+                                                      Colors.purple[500]),
                                         ),
                                         child: currentPage <
                                                 result['results'].length - 1

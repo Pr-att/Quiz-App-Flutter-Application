@@ -1,25 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/constants.dart';
+
 import '../../scores/score_add.dart';
+import '../../utils/result.dart';
 import '../quiz_screen.dart';
 
 // ignore: must_be_immutable
 class Boolean extends StatefulWidget {
   final PageController kPageController;
-  late String correctBoolAnswer;
-  Boolean(
-      {super.key,
-      required this.kPageController,
-      required this.correctBoolAnswer});
+
+  const Boolean({super.key, required this.kPageController});
 
   @override
   State<Boolean> createState() => _BooleanState();
 }
 
 class _BooleanState extends State<Boolean> {
+  List<String?> correctBooleanAnswersList = List.generate(
+      result['results'].length,
+      (index) => result['results'][index]['correct_answer']);
+
+  List<String?> userBooleanAnswersList =
+      List.generate(result['results'].length, (index) => null);
+
+  var unescape = HtmlUnescape();
+
+  @override
+  void initState() {
+    print(result);
+    print(correctBooleanAnswersList);
+    print(userBooleanAnswersList);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -29,8 +45,6 @@ class _BooleanState extends State<Boolean> {
         controller: widget.kPageController,
         itemCount: result['results'].length,
         itemBuilder: (context, index) {
-          widget.correctBoolAnswer = result['results'][index]['correct_answer'];
-
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: SizedBox(
@@ -43,7 +57,7 @@ class _BooleanState extends State<Boolean> {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'Q${index + 1}: ${result['results'][index]['question']}',
+                        'Q${index + 1}: ${unescape.convert(result['results'][index]['question'])}',
                         style: GoogleFonts.robotoMono(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
@@ -56,10 +70,10 @@ class _BooleanState extends State<Boolean> {
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
                           value: 'True',
-                          groupValue: kValue,
+                          groupValue: userBooleanAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userBooleanAnswersList[index] = value;
                             });
                           },
                         ),
@@ -69,10 +83,10 @@ class _BooleanState extends State<Boolean> {
                             style: GoogleFonts.robotoMono(fontSize: 20),
                           ),
                           value: 'False',
-                          groupValue: kValue,
+                          groupValue: userBooleanAnswersList[index],
                           onChanged: (value) {
                             setState(() {
-                              kValue = value;
+                              userBooleanAnswersList[index] = value;
                             });
                           },
                         ),
@@ -86,7 +100,6 @@ class _BooleanState extends State<Boolean> {
                             child: ElevatedButton(
                               onPressed: () {
                                 currentPage--;
-                                kValue = null;
                                 widget.kPageController.animateToPage(
                                     currentPage,
                                     duration: const Duration(milliseconds: 100),
@@ -111,59 +124,30 @@ class _BooleanState extends State<Boolean> {
                                       return ElevatedButton(
                                         onPressed: currentPage ==
                                                 result['results'].length - 1
-                                            ? () {
-                                                if (kCorrectBoolAnswer ==
-                                                    kValue) {
-                                                  currentScore++;
-                                                } else {
-                                                  currentScore--;
-                                                }
-
-                                                if (snapshot.data?.docs
-                                                        .isNotEmpty ==
-                                                    true) {
-                                                  // Access the property safely
-                                                  if (snapshot.data!.docs[0]
-                                                          ['score'] <
-                                                      currentScore) {
-                                                    // Update the Firestore document
-                                                    FirebaseFirestore.instance
-                                                        .collection(
-                                                            'high-score')
-                                                        .doc('alex')
-                                                        .update({
-                                                      'name': value.name
-                                                          .toString()
-                                                          .capitalize(),
-                                                      'score': currentScore,
-                                                    });
+                                            ? () async {
+                                                for (int i = 0;
+                                                    i <
+                                                        correctBooleanAnswersList
+                                                            .length;
+                                                    i++) {
+                                                  if (userBooleanAnswersList[
+                                                          i] ==
+                                                      correctBooleanAnswersList[
+                                                          i]) {
+                                                    currentScore++;
+                                                  } else if (userBooleanAnswersList[
+                                                          i] ==
+                                                      null) {
+                                                    continue;
+                                                  } else {
+                                                    currentScore--;
                                                   }
-
-                                                  FirebaseFirestore.instance
-                                                      .collection('scores')
-                                                      .doc(value.name
-                                                          .toString()
-                                                          .capitalize())
-                                                      .set({
-                                                    'name': value.name,
-                                                    'score': currentScore
-                                                  });
                                                 }
-
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  '/result',
-                                                );
+                                                await getResult(snapshot, value,
+                                                    context, 'boolean');
                                               }
                                             : () {
-                                                if (kCorrectBoolAnswer ==
-                                                    kValue) {
-                                                  currentScore++;
-                                                } else {
-                                                  currentScore--;
-                                                }
                                                 currentPage++;
-                                                kValue = null;
                                                 widget.kPageController
                                                     .animateToPage(currentPage,
                                                         duration:
@@ -174,11 +158,13 @@ class _BooleanState extends State<Boolean> {
                                                 setState(() {});
                                               },
                                         style: ButtonStyle(
-                                          backgroundColor: kValue == null
-                                              ? MaterialStateProperty.all(
-                                                  Colors.brown[100])
-                                              : MaterialStateProperty.all(
-                                                  Colors.purple[500]),
+                                          backgroundColor:
+                                              userBooleanAnswersList[index] ==
+                                                      null
+                                                  ? MaterialStateProperty.all(
+                                                      Colors.brown[100])
+                                                  : MaterialStateProperty.all(
+                                                      Colors.purple[500]),
                                         ),
                                         child: currentPage <
                                                 result['results'].length - 1
