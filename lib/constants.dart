@@ -33,6 +33,7 @@ TextStyle customStyleLightSmall = GoogleFonts.robotoMono(
 TextStyle customStyleDarkSmall = GoogleFonts.robotoMono(
   fontSize: 15,
   fontWeight: FontWeight.bold,
+  color: Colors.black,
 );
 
 extension StringExtension on String {
@@ -40,3 +41,5 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
+
+bool isHighScore = false;

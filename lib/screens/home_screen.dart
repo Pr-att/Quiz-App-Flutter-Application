@@ -58,12 +58,23 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Hero(
+                  tag: 'logo',
+                  child: Image.asset(
+                    'asset/images/quiz.png',
+                    height: 200,
+                    width: 200,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 50.0, vertical: 10),
                   child: Text(
-                    "Welcome to my Quiz App",
-                    style: GoogleFonts.robotoMono(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                    "QUIZIT",
+                    style: GoogleFonts.robotoMono(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                 ),

@@ -11,9 +11,7 @@ import '../../utils/result.dart';
 import '../quiz_screen.dart';
 
 class Multiple extends StatefulWidget {
-  final PageController kPageController;
-
-  const Multiple({super.key, required this.kPageController});
+  const Multiple({Key? key}) : super(key: key);
 
   @override
   State<Multiple> createState() => _MultipleState();
@@ -27,13 +25,7 @@ class _MultipleState extends State<Multiple> {
   List<String?> userMultipleChoiceAnswersList =
       List.generate(result['results'].length, (index) => null);
 
-  @override
-  void initState() {
-    print(result);
-    print(correctMultipleAnswersList);
-    print(userMultipleChoiceAnswersList);
-    super.initState();
-  }
+  final kPageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +33,7 @@ class _MultipleState extends State<Multiple> {
       height: MediaQuery.of(context).size.height * 0.8,
       child: PageView.builder(
         physics: const NeverScrollableScrollPhysics(),
-        controller: widget.kPageController,
+        controller: kPageController,
         itemCount: result['results'].length,
         itemBuilder: (context, index) {
           var answers = result['results'][index]['incorrect_answers'];
@@ -133,15 +125,33 @@ class _MultipleState extends State<Multiple> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5,
+                                shadowColor: Colors.red[300],
+                                shape: const RoundedRectangleBorder(
+                                  side:
+                                      BorderSide(color: Colors.brown, width: 1),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                              ),
                               onPressed: () {
-                                currentPage--;
-                                widget.kPageController.animateToPage(
-                                    currentPage,
+                                Provider.of<QuizQuestion>(context,
+                                        listen: false)
+                                    .previousPage();
+                                kPageController.animateToPage(
+                                    Provider.of<QuizQuestion>(context,
+                                            listen: false)
+                                        .page,
                                     duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut);
                                 setState(() {});
                               },
-                              child: const Text('Previous'),
+                              child: const Text(
+                                'Previous',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           ),
                         ),
@@ -157,7 +167,10 @@ class _MultipleState extends State<Multiple> {
                                     builder: (BuildContext context, value,
                                         Widget? child) {
                                       return ElevatedButton(
-                                        onPressed: currentPage ==
+                                        onPressed: Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .page ==
                                                 result['results'].length - 1
                                             ? () async {
                                                 for (int i = 0;
@@ -169,56 +182,77 @@ class _MultipleState extends State<Multiple> {
                                                           i] ==
                                                       correctMultipleAnswersList[
                                                           i]) {
-                                                    currentScore++;
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .correctAnswer();
                                                   } else if (userMultipleChoiceAnswersList[
                                                           i] ==
                                                       null) {
                                                     continue;
                                                   } else {
-                                                    currentScore--;
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .wrongAnswer();
                                                   }
                                                 }
                                                 await getResult(snapshot, value,
-                                                    context, 'boolean');
+                                                    context, 'multiple');
                                               }
                                             : () {
-                                                // if (kFinalShuffledValue ==
-                                                //     kValue) {
-                                                //   currentScore++;
-                                                // } else {
-                                                //   currentScore--;
-                                                // }
-                                                currentPage++;
-                                                widget.kPageController
-                                                    .animateToPage(currentPage,
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    100),
-                                                        curve: Curves.easeIn);
+                                                Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .nextPage();
+                                                kPageController.animateToPage(
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .page,
+                                                    duration: const Duration(
+                                                        milliseconds: 100),
+                                                    curve: Curves.easeIn);
                                                 setState(() {});
                                               },
                                         style: ButtonStyle(
+                                          elevation:
+                                              MaterialStateProperty.all(5),
+                                          shadowColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.red[300]),
+                                          shape: MaterialStateProperty.all<
+                                              OutlinedBorder>(
+                                            RoundedRectangleBorder(
+                                              side: const BorderSide(
+                                                  color: Colors.brown,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
                                           backgroundColor:
                                               userMultipleChoiceAnswersList[
                                                           index] ==
                                                       null
-                                                  ? MaterialStateProperty.all(
-                                                      Colors.brown[100])
+                                                  ? null
                                                   : MaterialStateProperty.all(
-                                                      Colors.purple[500]),
+                                                      Colors.blueGrey[300]),
                                         ),
-                                        child: currentPage <
+                                        child: Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .page <
                                                 result['results'].length - 1
                                             ? const Text(
                                                 'Next',
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.black),
                                               )
                                             : const Text(
                                                 'Submit',
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.black),
                                               ),
                                       );
                                     },
@@ -228,6 +262,35 @@ class _MultipleState extends State<Multiple> {
                         ),
                       ],
                     ),
+                    Visibility(
+                      maintainAnimation: true,
+                      maintainState: true,
+                      visible: userMultipleChoiceAnswersList[index] != null,
+                      child: Center(
+                        child: AnimatedOpacity(
+                          opacity: userMultipleChoiceAnswersList[index] != null
+                              ? 1.0
+                              : 0.0,
+                          duration: const Duration(milliseconds: 500),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: FloatingActionButton.extended(
+                              onPressed: () {
+                                setState(() {
+                                  userMultipleChoiceAnswersList[index] = null;
+                                });
+                              },
+                              label: Text(
+                                'Clear',
+                                style: GoogleFonts.robotoMono(),
+                              ),
+                              icon: const Icon(Icons.clear),
+                              backgroundColor: Colors.red[300],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -236,10 +299,16 @@ class _MultipleState extends State<Multiple> {
         },
         onPageChanged: (index) {
           setState(() {
-            currentPage = index;
+            Provider.of<QuizQuestion>(context, listen: false).setPage(index);
           });
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    kPageController.dispose();
+    super.dispose();
   }
 }

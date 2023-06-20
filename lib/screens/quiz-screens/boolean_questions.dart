@@ -8,11 +8,8 @@ import '../../scores/score_add.dart';
 import '../../utils/result.dart';
 import '../quiz_screen.dart';
 
-// ignore: must_be_immutable
 class Boolean extends StatefulWidget {
-  final PageController kPageController;
-
-  const Boolean({super.key, required this.kPageController});
+  const Boolean({Key? key}) : super(key: key);
 
   @override
   State<Boolean> createState() => _BooleanState();
@@ -27,14 +24,7 @@ class _BooleanState extends State<Boolean> {
       List.generate(result['results'].length, (index) => null);
 
   var unescape = HtmlUnescape();
-
-  @override
-  void initState() {
-    print(result);
-    print(correctBooleanAnswersList);
-    print(userBooleanAnswersList);
-    super.initState();
-  }
+  final kPageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +32,7 @@ class _BooleanState extends State<Boolean> {
       height: MediaQuery.of(context).size.height * 0.8,
       child: PageView.builder(
         physics: const NeverScrollableScrollPhysics(),
-        controller: widget.kPageController,
+        controller: kPageController,
         itemCount: result['results'].length,
         itemBuilder: (context, index) {
           return Padding(
@@ -98,15 +88,33 @@ class _BooleanState extends State<Boolean> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5,
+                                shadowColor: Colors.red[300],
+                                shape: const RoundedRectangleBorder(
+                                  side:
+                                      BorderSide(color: Colors.brown, width: 1),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                              ),
                               onPressed: () {
-                                currentPage--;
-                                widget.kPageController.animateToPage(
-                                    currentPage,
+                                Provider.of<QuizQuestion>(context,
+                                        listen: false)
+                                    .previousPage();
+                                kPageController.animateToPage(
+                                    Provider.of<QuizQuestion>(context,
+                                            listen: false)
+                                        .page,
                                     duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeInOut);
                                 setState(() {});
                               },
-                              child: const Text('Previous'),
+                              child: const Text(
+                                'Previous',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           ),
                         ),
@@ -122,7 +130,10 @@ class _BooleanState extends State<Boolean> {
                                     builder: (BuildContext context, value,
                                         Widget? child) {
                                       return ElevatedButton(
-                                        onPressed: currentPage ==
+                                        onPressed: Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .page ==
                                                 result['results'].length - 1
                                             ? () async {
                                                 for (int i = 0;
@@ -134,49 +145,76 @@ class _BooleanState extends State<Boolean> {
                                                           i] ==
                                                       correctBooleanAnswersList[
                                                           i]) {
-                                                    currentScore++;
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .correctAnswer();
                                                   } else if (userBooleanAnswersList[
                                                           i] ==
                                                       null) {
                                                     continue;
                                                   } else {
-                                                    currentScore--;
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .wrongAnswer();
                                                   }
                                                 }
                                                 await getResult(snapshot, value,
                                                     context, 'boolean');
                                               }
                                             : () {
-                                                currentPage++;
-                                                widget.kPageController
-                                                    .animateToPage(currentPage,
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    100),
-                                                        curve: Curves.easeIn);
+                                                Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .nextPage();
+                                                kPageController.animateToPage(
+                                                    Provider.of<QuizQuestion>(
+                                                            context,
+                                                            listen: false)
+                                                        .page,
+                                                    duration: const Duration(
+                                                        milliseconds: 100),
+                                                    curve: Curves.easeIn);
                                                 setState(() {});
                                               },
                                         style: ButtonStyle(
+                                          elevation:
+                                              MaterialStateProperty.all(5),
+                                          shadowColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.red[300]),
+                                          shape: MaterialStateProperty.all<
+                                              OutlinedBorder>(
+                                            RoundedRectangleBorder(
+                                              side: const BorderSide(
+                                                  color: Colors.brown,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
                                           backgroundColor:
                                               userBooleanAnswersList[index] ==
                                                       null
-                                                  ? MaterialStateProperty.all(
-                                                      Colors.brown[100])
+                                                  ? null
                                                   : MaterialStateProperty.all(
-                                                      Colors.purple[500]),
+                                                      Colors.blueGrey[300]),
                                         ),
-                                        child: currentPage <
+                                        child: Provider.of<QuizQuestion>(
+                                                        context,
+                                                        listen: false)
+                                                    .page <
                                                 result['results'].length - 1
                                             ? const Text(
                                                 'Next',
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.black),
                                               )
                                             : const Text(
                                                 'Submit',
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                    color: Colors.black),
                                               ),
                                       );
                                     },
@@ -186,6 +224,34 @@ class _BooleanState extends State<Boolean> {
                         ),
                       ],
                     ),
+                    Visibility(
+                      maintainAnimation: true,
+                      maintainState: true,
+                      visible: userBooleanAnswersList[index] != null,
+                      child: Center(
+                        child: AnimatedOpacity(
+                          opacity:
+                              userBooleanAnswersList[index] != null ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 500),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: FloatingActionButton.extended(
+                              onPressed: () {
+                                setState(() {
+                                  userBooleanAnswersList[index] = null;
+                                });
+                              },
+                              label: Text(
+                                'Clear',
+                                style: GoogleFonts.robotoMono(),
+                              ),
+                              icon: const Icon(Icons.clear),
+                              backgroundColor: Colors.red[300],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -194,10 +260,16 @@ class _BooleanState extends State<Boolean> {
         },
         onPageChanged: (index) {
           setState(() {
-            currentPage = index;
+            Provider.of<QuizQuestion>(context, listen: false).setPage(index);
           });
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    kPageController.dispose();
+    super.dispose();
   }
 }
