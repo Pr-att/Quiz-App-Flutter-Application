@@ -15,27 +15,46 @@ getResult(snapshot, value, BuildContext context, isMultipleChoice) async {
   if (isMultipleChoice ==
       Provider.of<QuizQuestion>(context, listen: false).category) {
     if (snapshot.data?.docs.isNotEmpty == true) {
-      if (snapshot.data!.docs[0]['score'] <
+      switch (snapshot.data!.docs[0]['score'] <
           Provider.of<QuizQuestion>(context, listen: false).score) {
-        isHighScore = true;
-        showUpperStackCelebration = true;
-        // Update the Firestore document
-        await FirebaseFirestore.instance
-            .collection('high-score')
-            .doc('alex')
-            .update({
-          'name': value.name.toString().capitalize(),
-          'score': Provider.of<QuizQuestion>(context, listen: false).score
-        });
-      }
+        case true:
+          isHighScore = true;
+          showUpperStackCelebration = true;
+          // Update the Firestore document
+          await FirebaseFirestore.instance
+              .collection('high-score')
+              .doc('alex')
+              .update({
+            'name': value.name.toString().capitalize(),
+            'score': Provider.of<QuizQuestion>(context, listen: false).score,
+            'level': Provider.of<QuizQuestion>(context, listen: false)
+                .difficulty
+                .toString()
+                .capitalize(),
+            'category': categoryType[
+                Provider.of<QuizQuestion>(context, listen: false).category],
+            'question':
+                Provider.of<QuizQuestion>(context, listen: false).amount,
+          });
+          break;
 
-      await FirebaseFirestore.instance
-          .collection('scores')
-          .doc(value.name.toString().capitalize())
-          .set({
-        'name': value.name,
-        'score': Provider.of<QuizQuestion>(context, listen: false).score
-      });
+        default:
+          await FirebaseFirestore.instance
+              .collection('scores')
+              .doc(value.name.toString().capitalize())
+              .set({
+            'name': value.name.toString().capitalize(),
+            'score': Provider.of<QuizQuestion>(context, listen: false).score,
+            'level': Provider.of<QuizQuestion>(context, listen: false)
+                .difficulty
+                .toString()
+                .capitalize(),
+            'category': categoryType[
+                Provider.of<QuizQuestion>(context, listen: false).category],
+            'question':
+                Provider.of<QuizQuestion>(context, listen: false).amount,
+          });
+      }
     }
     Navigator.of(context).pop();
     Navigator.pushReplacementNamed(context, '/result',
@@ -55,6 +74,13 @@ getResult(snapshot, value, BuildContext context, isMultipleChoice) async {
             .update({
           'name': value.name.toString().capitalize(),
           'score': Provider.of<QuizQuestion>(context, listen: false).score,
+          'level': Provider.of<QuizQuestion>(context, listen: false)
+              .difficulty
+              .toString()
+              .capitalize(),
+          'category': categoryType[
+              Provider.of<QuizQuestion>(context, listen: false).category],
+          'question': Provider.of<QuizQuestion>(context, listen: false).amount,
         });
       }
 
@@ -62,8 +88,15 @@ getResult(snapshot, value, BuildContext context, isMultipleChoice) async {
           .collection('scores')
           .doc(value.name.toString().capitalize())
           .set({
-        'name': value.name,
-        'score': Provider.of<QuizQuestion>(context, listen: false).score
+        'name': value.name.toString().capitalize(),
+        'score': Provider.of<QuizQuestion>(context, listen: false).score,
+        'level': Provider.of<QuizQuestion>(context, listen: false)
+            .difficulty
+            .toString()
+            .capitalize(),
+        'category': categoryType[
+            Provider.of<QuizQuestion>(context, listen: false).category],
+        'question': Provider.of<QuizQuestion>(context, listen: false).amount,
       });
     }
     Navigator.of(context).pop();

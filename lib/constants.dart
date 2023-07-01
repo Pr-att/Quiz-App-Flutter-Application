@@ -43,3 +43,16 @@ extension StringExtension on String {
 }
 
 bool isHighScore = false;
+
+Map<String, String> categoryType = {
+  '9': 'General Knowledge',
+  '10': 'Entertainment: Books',
+  '11': 'Entertainment: Film',
+  '17': 'Science & Nature',
+  '19': 'Science: Mathematics',
+  '20': 'Mythology',
+  '21': 'Sports',
+  '26': 'Celebrities',
+  '27': 'Animals',
+  '31': 'Entertainment: Japanese Anime & Manga',
+};

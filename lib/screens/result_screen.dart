@@ -165,12 +165,10 @@ class _ResultScreenState extends State<ResultScreen> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    // shape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(10),
-                    // ),
                     child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
-                            .collection('high-score')
+                            .collection('scores')
+                            .orderBy("score", descending: true)
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
