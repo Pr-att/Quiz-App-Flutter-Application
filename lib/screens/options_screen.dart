@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -72,9 +73,9 @@ class _OptionScreenState extends State<OptionScreen> {
                   Navigator.pushReplacementNamed(context, '/scoreboard');
                 }
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.leaderboard,
-                color: Colors.amber.shade600,
+                // color: Colors.amber.shade600,
               ),
             ),
             IconButton(
@@ -188,7 +189,7 @@ class _OptionScreenState extends State<OptionScreen> {
               },
               icon: const Icon(
                 Icons.info,
-                color: Colors.black,
+                // color: Colors.black,
               ),
             ),
           ],
@@ -276,26 +277,54 @@ class _OptionScreenState extends State<OptionScreen> {
                     DropdownButton(
                       value: _difficulty,
                       isExpanded: true,
-                      style: GoogleFonts.robotoMono(color: Colors.black),
-                      icon: SvgPicture.asset(
-                        'asset/images/level.svg',
-                        height: 30,
-                        width: 30,
-                      ),
+                      style: GoogleFonts.robotoMono(),
+                      icon: SvgPicture.asset('asset/images/level.svg',
+                          height: 25,
+                          width: 25,
+                          color: ThemeMode.system == ThemeMode.dark
+                              ? FlexColor.indigoM3LightPrimaryContainer
+                              : FlexColor.indigoM3DarkPrimaryContainer),
                       borderRadius: BorderRadius.circular(10),
-                      hint: const Text('Select Difficulty'),
-                      items: const [
+                      hint: const Text(
+                        'Select Difficulty',
+                        style: TextStyle(
+                            color: ThemeMode.system == ThemeMode.dark
+                                ? FlexColor.indigoM3LightPrimaryContainer
+                                : FlexColor.indigoM3DarkPrimaryContainer),
+                      ),
+                      items: [
                         DropdownMenuItem(
                           value: 'easy',
-                          child: Text('Easy'),
+                          child: Text(
+                            'Easy',
+                            style: TextStyle(
+                                letterSpacing: 1.5,
+                                fontSize: 15,
+                                color: Colors.green.shade500,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'medium',
-                          child: Text('Medium'),
+                          child: Text(
+                            'Medium',
+                            style: TextStyle(
+                                letterSpacing: 1.5,
+                                fontSize: 15,
+                                color: Colors.orange.shade500,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'hard',
-                          child: Text('Hard'),
+                          child: Text(
+                            'Hard',
+                            style: TextStyle(
+                                letterSpacing: 1.5,
+                                fontSize: 15,
+                                color: Colors.red.shade500,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                       onChanged: (value) {
@@ -309,54 +338,121 @@ class _OptionScreenState extends State<OptionScreen> {
                     DropdownButton(
                       value: _category,
                       isExpanded: true,
-                      style: GoogleFonts.robotoMono(color: Colors.black),
-                      icon: SvgPicture.asset(
-                        'asset/images/category.svg',
-                        height: 25,
-                        width: 25,
-                      ),
+                      style: GoogleFonts.robotoMono(),
+                      icon: SvgPicture.asset('asset/images/category.svg',
+                          height: 25,
+                          width: 25,
+                          color: ThemeMode.system == ThemeMode.dark
+                              ? FlexColor.indigoM3LightPrimaryContainer
+                              : FlexColor.indigoM3DarkPrimaryContainer),
                       borderRadius: BorderRadius.circular(10),
-                      hint: const Text('Select Category'),
+                      hint: const Text(
+                        'Select Category',
+                        style: TextStyle(
+                            color: ThemeMode.system == ThemeMode.dark
+                                ? FlexColor.indigoM3LightPrimaryContainer
+                                : FlexColor.indigoM3DarkPrimaryContainer),
+                      ),
                       items: const [
                         DropdownMenuItem(
                           value: '9',
-                          child: Text('General Knowledge'),
+                          child: Text(
+                            'General Knowledge',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '10',
-                          child: Text('Entertainment: Books'),
+                          child: Text(
+                            'Entertainment: Books',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '11',
-                          child: Text('Entertainment: Film'),
+                          child: Text(
+                            'Entertainment: Film',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '17',
-                          child: Text('Science & Nature'),
+                          child: Text(
+                            'Science & Nature',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '19',
-                          child: Text('Science: Mathematics'),
+                          child: Text(
+                            'Science: Mathematics',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '20',
-                          child: Text('Mythology'),
+                          child: Text(
+                            'Mythology',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '21',
-                          child: Text('Sports'),
+                          child: Text(
+                            'Sports',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '26',
-                          child: Text('Celebrities'),
+                          child: Text(
+                            'Celebrities',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '27',
-                          child: Text('Animals'),
+                          child: Text(
+                            'Animals',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: '31',
-                          child: Text('Entertainment: Japanese Anime & Manga'),
+                          child: Text(
+                            'Entertainment: Japanese Anime & Manga',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                       ],
                       onChanged: (value) {
@@ -370,22 +466,41 @@ class _OptionScreenState extends State<OptionScreen> {
                     DropdownButton(
                       value: _type,
                       isExpanded: true,
-                      style: GoogleFonts.robotoMono(color: Colors.black),
-                      icon: SvgPicture.asset(
-                        'asset/images/type.svg',
-                        height: 30,
-                        width: 30,
-                      ),
+                      style: GoogleFonts.robotoMono(),
+                      icon: SvgPicture.asset('asset/images/type.svg',
+                          height: 30,
+                          width: 30,
+                          color: ThemeMode.system == ThemeMode.dark
+                              ? FlexColor.indigoM3LightPrimaryContainer
+                              : FlexColor.indigoM3DarkPrimaryContainer),
                       borderRadius: BorderRadius.circular(10),
-                      hint: const Text('Select Type'),
+                      hint: const Text(
+                        'Select Type',
+                        style: TextStyle(
+                            color: ThemeMode.system == ThemeMode.dark
+                                ? FlexColor.indigoM3LightPrimaryContainer
+                                : FlexColor.indigoM3DarkPrimaryContainer),
+                      ),
                       items: const [
                         DropdownMenuItem(
                           value: 'multiple',
-                          child: Text('Multiple Choice'),
+                          child: Text(
+                            'Multiple Choice',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'boolean',
-                          child: Text('True/False'),
+                          child: Text(
+                            'True/False',
+                            style: TextStyle(
+                                color: ThemeMode.system == ThemeMode.dark
+                                    ? FlexColor.indigoM3LightPrimaryContainer
+                                    : FlexColor.indigoM3DarkPrimaryContainer),
+                          ),
                         ),
                       ],
                       onChanged: (value) {
@@ -398,6 +513,7 @@ class _OptionScreenState extends State<OptionScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
+                        final navigator = Navigator.of(context);
                         if (connected == true) {
                           if (_formKey.currentState!.validate() &&
                               _difficulty != null &&
@@ -431,18 +547,17 @@ class _OptionScreenState extends State<OptionScreen> {
                             result = await question(context);
 
                             if (result['response_code'] != 0) {
-                              Navigator.pop(context);
+                              navigator.pop();
                               questionError(context);
                             } else {
-                              Navigator.pop(context);
-                              Navigator.pushReplacementNamed(context, '/quiz');
+                              navigator.pop();
+                              navigator.pushReplacementNamed('/quiz');
                             }
                           }
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        shape: CircleBorder(
                           side: BorderSide(
                             color:
                                 connected == true ? Colors.green : Colors.red,
@@ -454,13 +569,13 @@ class _OptionScreenState extends State<OptionScreen> {
                         connected == true
                             ? Icons.start_rounded
                             : Icons.error_outline_rounded,
-                        color: Colors.black,
+                        // color: Colors.black,
                       ),
                     ),
                     Text(
-                      connected == true ? 'Start' : 'No Internet Connection',
+                      connected == true ? 'Start' : 'No Internet',
                       style: GoogleFonts.robotoMono(
-                          fontSize: 20,
+                          fontSize: 15,
                           color: connected == true ? Colors.green : Colors.red),
                     ),
                   ],

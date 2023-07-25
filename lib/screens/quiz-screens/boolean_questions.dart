@@ -113,7 +113,6 @@ class _BooleanState extends State<Boolean> {
                               },
                               child: const Text(
                                 'Previous',
-                                style: TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
@@ -194,12 +193,6 @@ class _BooleanState extends State<Boolean> {
                                                   BorderRadius.circular(10.0),
                                             ),
                                           ),
-                                          backgroundColor:
-                                              userBooleanAnswersList[index] ==
-                                                      null
-                                                  ? null
-                                                  : MaterialStateProperty.all(
-                                                      Colors.blueGrey[300]),
                                         ),
                                         child: Provider.of<QuizQuestion>(
                                                         context,
@@ -208,13 +201,9 @@ class _BooleanState extends State<Boolean> {
                                                 result['results'].length - 1
                                             ? const Text(
                                                 'Next',
-                                                style: TextStyle(
-                                                    color: Colors.black),
                                               )
                                             : const Text(
                                                 'Submit',
-                                                style: TextStyle(
-                                                    color: Colors.black),
                                               ),
                                       );
                                     },
@@ -246,7 +235,6 @@ class _BooleanState extends State<Boolean> {
                                 style: GoogleFonts.robotoMono(),
                               ),
                               icon: const Icon(Icons.clear),
-                              backgroundColor: Colors.red[300],
                             ),
                           ),
                         ),

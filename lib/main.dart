@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/scores/score_add.dart';
@@ -40,9 +41,14 @@ class MyApp extends StatelessWidget {
         '/scoreboard': (context) => const ScoreBoard(),
       },
       title: 'QuizIt',
-      theme: ThemeData(
+      themeMode: ThemeMode.system,
+      theme: FlexThemeData.light(
         useMaterial3: true,
-        primarySwatch: Colors.blue,
+        scheme: FlexScheme.indigoM3,
+      ),
+      darkTheme: FlexThemeData.dark(
+        useMaterial3: true,
+        scheme: FlexScheme.indigoM3,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -64,7 +65,6 @@ class _ScoreBoardState extends State<ScoreBoard> {
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
                       ),
-                      color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: StreamBuilder<QuerySnapshot>(
@@ -81,13 +81,15 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                   Expanded(
                                     child: Text(
                                       "Highest Score",
-                                      style: customStyleLight,
+                                      style: customStyleDark.copyWith(
+                                          color: CupertinoColors.black),
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
                                       "${snapshot.data!.docs[0]['name'].toString().capitalize()}:${snapshot.data!.docs[0]['score']}",
-                                      style: customStyleDark,
+                                      style: customStyleDark.copyWith(
+                                          color: CupertinoColors.systemPurple),
                                     ),
                                   ),
                                 ],
@@ -116,11 +118,12 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                 colors: [
                                   Colors.purple[50]!,
                                   Colors.grey[100]!,
+                                  Colors.purple[50]!,
+                                  Colors.grey[100]!,
                                 ],
                                 begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                                end: Alignment.bottomLeft,
                               ),
-                              color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: ListView.builder(
@@ -144,7 +147,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                   dense: true,
                                   trailing: Text(
                                     "${snapshot.data!.docs[index]['score']}",
-                                    style: customStyleDarkSmall,
+                                    style: customStyleDarkSmall.copyWith(
+                                        color: CupertinoColors.black),
                                   ),
                                   // How to set text on the bottom of the list tile
 
@@ -155,7 +159,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                           snapshot.data!.docs[index]['name']
                                               .toString()
                                               .capitalize(),
-                                          style: customStyleDarkSmall,
+                                          style: customStyleDarkSmall.copyWith(
+                                              color: CupertinoColors.black),
                                         ),
                                       ),
                                       Expanded(
@@ -300,7 +305,8 @@ class _ScoreBoardState extends State<ScoreBoard> {
                                   ),
                                   leading: Text(
                                     '${index + 1})',
-                                    style: customStyleDarkSmall,
+                                    style: customStyleDarkSmall.copyWith(
+                                        color: CupertinoColors.black),
                                   ),
                                 );
                               },

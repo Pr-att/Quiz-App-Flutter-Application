@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:quiz_app/scores/score_add.dart';
 import 'package:quiz_app/screens/quiz-screens/boolean_questions.dart';
 import 'package:quiz_app/screens/quiz-screens/multiple_choice_questions.dart';
+import 'package:quiz_app/utils/result.dart';
 
-import '../utils/result.dart';
 import '../utils/rules.dart';
 import '../utils/timer.dart';
 
@@ -209,6 +209,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                       .amount) *
                                   15,
                               onTimerFinished: () async {
+                                // TODO: Turn it On
                                 await getResult(
                                     snapshot,
                                     value,

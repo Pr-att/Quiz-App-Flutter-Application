@@ -150,7 +150,6 @@ class _MultipleState extends State<Multiple> {
                               },
                               child: const Text(
                                 'Previous',
-                                style: TextStyle(color: Colors.black),
                               ),
                             ),
                           ),
@@ -231,13 +230,6 @@ class _MultipleState extends State<Multiple> {
                                                   BorderRadius.circular(10.0),
                                             ),
                                           ),
-                                          backgroundColor:
-                                              userMultipleChoiceAnswersList[
-                                                          index] ==
-                                                      null
-                                                  ? null
-                                                  : MaterialStateProperty.all(
-                                                      Colors.blueGrey[300]),
                                         ),
                                         child: Provider.of<QuizQuestion>(
                                                         context,
@@ -246,13 +238,9 @@ class _MultipleState extends State<Multiple> {
                                                 result['results'].length - 1
                                             ? const Text(
                                                 'Next',
-                                                style: TextStyle(
-                                                    color: Colors.black),
                                               )
                                             : const Text(
                                                 'Submit',
-                                                style: TextStyle(
-                                                    color: Colors.black),
                                               ),
                                       );
                                     },
@@ -285,7 +273,6 @@ class _MultipleState extends State<Multiple> {
                                 style: GoogleFonts.robotoMono(),
                               ),
                               icon: const Icon(Icons.clear),
-                              backgroundColor: Colors.red[300],
                             ),
                           ),
                         ),
